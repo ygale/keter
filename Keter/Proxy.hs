@@ -19,6 +19,7 @@ import           Data.Monoid                       (mappend, mempty)
 import           Data.Text.Encoding                (decodeUtf8With, encodeUtf8)
 import           Data.Text.Encoding.Error          (lenientDecode)
 import qualified Data.Vector                       as V
+import           Keter.Proxy.Rewrite
 import           Keter.Types
 import           Keter.Types.Middleware
 import           Network.HTTP.Conduit              (Manager)
@@ -138,9 +139,18 @@ withClient isSecure useHeader bound manager hostLookup =
     performAction req (PAPort port tbound) =
         return (addjustGlobalBound tbound, WPRModifiedRequest req' $ ProxyDest "127.0.0.1" port)
       where
-        req' = req
+        mRew = rewritePathParts [] --rules
+                 (Wai.rawPathInfo req, Wai.rawQueryString req)
+        req' = case mRew of
+          Nothing -> req
             { Wai.requestHeaders = ("X-Forwarded-Proto", protocol)
                                  : Wai.requestHeaders req
+            }
+          Just (path, query) -> req
+            { Wai.requestHeaders = ("X-Forwarded-Proto", protocol)
+                                 : Wai.requestHeaders req
+            , Wai.rawPathInfo = path
+            , Wai.rawQueryString = query
             }
     performAction _ (PAStatic StaticFilesConfig {..}) =
         return (addjustGlobalBound sfconfigTimeout, WPRApplication $ processMiddleware sfconfigMiddleware $ staticApp (defaultFileServerSettings sfconfigRoot)

@@ -85,6 +85,7 @@ Library
                        Keter.Main
                        Keter.PortPool
                        Keter.Proxy
+                       Keter.Proxy.Rewrite
                        Keter.HostManager
                        Network.HTTP.ReverseProxy.Rewrite
                        Data.Yaml.FilePath
