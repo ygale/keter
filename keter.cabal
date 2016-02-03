@@ -31,7 +31,9 @@ Library
                      , data-default
                      , filepath
                      , zlib
+                     , split
                      , network
+                     , network-uri
                      , time
                      , tar                       >= 0.4
                      , template-haskell
