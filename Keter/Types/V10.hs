@@ -31,6 +31,7 @@ import qualified Keter.Types.V04                   as V04
 import           Network.HTTP.ReverseProxy.Rewrite (ReverseProxyConfig)
 import qualified Network.Wai.Handler.Warp          as Warp
 import qualified Network.Wai.Handler.WarpTLS       as WarpTLS
+import           Keter.Proxy.Rewrite               (RewritePath)
 import           System.Posix.Types                (EpochTime)
 
 data BundleConfig = BundleConfig
@@ -351,6 +352,7 @@ data WebAppConfig port = WebAppConfig
     , waconfigPort        :: !port
     , waconfigForwardEnv  :: !(Set Text)
     , waconfigTimeout     :: !(Maybe Int)
+    , waconfigRewritePath :: ![RewritePath] -- ^ URL path rewrite rules
     }
     deriving Show
 
@@ -366,6 +368,7 @@ instance ToCurrent (WebAppConfig ()) where
         , waconfigPort = ()
         , waconfigForwardEnv = Set.empty
         , waconfigTimeout = Nothing
+        , waconfigRewritePath = []
         }
 
 instance ParseYamlFile (WebAppConfig ()) where
@@ -389,6 +392,7 @@ instance ParseYamlFile (WebAppConfig ()) where
             <*> return ()
             <*> o .:? "forward-env" .!= Set.empty
             <*> o .:? "connection-time-bound"
+            <*> o .:? "rewrite-path" .!= []
 
 instance ToJSON (WebAppConfig ()) where
     toJSON WebAppConfig {..} = object
@@ -399,6 +403,7 @@ instance ToJSON (WebAppConfig ()) where
         , "ssl" .= waconfigSsl
         , "forward-env" .= waconfigForwardEnv
         , "connection-time-bound" .= waconfigTimeout
+        , "rewrite-path" .= waconfigRewritePath
         ]
 
 data AppInput = AIBundle !FilePath !EpochTime
