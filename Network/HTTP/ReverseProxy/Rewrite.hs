@@ -16,7 +16,6 @@ import           Data.Monoid                 ((<>))
 
 import           Control.Monad               (unless)
 import           Data.Aeson
-import           Data.Array                  ((!))
 import           Data.Map                    (Map)
 import qualified Data.Map                    as Map
 import           Data.Set                    (Set)
@@ -35,8 +34,7 @@ import           Blaze.ByteString.Builder    (fromByteString)
 import           Data.Default
 
 -- Regular expression parsing, replacement, matching
-import           Text.Regex.TDFA             (MatchText, makeRegex,
-                                              matchOnceText)
+import           Text.Regex.TDFA             (makeRegex, matchOnceText)
 import           Text.Regex.TDFA.Common      (Regex (..))
 import           Keter.Proxy.Rewrite         (RewritePath, rewrite,
                                               rewritePathRule)

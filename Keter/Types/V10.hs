@@ -184,7 +184,7 @@ data StanzaRaw port
 --
 -- 2. Not all stanzas have an associated proxy action.
 data ProxyActionRaw
-    = PAPort Port !(Maybe Int)
+    = PAPort Port !(Maybe Int) [RewritePath]
     | PAStatic StaticFilesConfig
     | PARedirect RedirectConfig
     | PAReverseProxy ReverseProxyConfig ![ MiddlewareConfig ] !(Maybe Int)

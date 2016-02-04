@@ -136,10 +136,10 @@ withClient isSecure useHeader bound manager hostLookup =
                                  $ RDPrefix True host' Nothing
             }
 
-    performAction req (PAPort port tbound) =
+    performAction req (PAPort port tbound rules) =
         return (addjustGlobalBound tbound, WPRModifiedRequest req' $ ProxyDest "127.0.0.1" port)
       where
-        mRew = rewritePathParts [] --rules
+        mRew = rewritePathParts rules
                  (Wai.rawPathInfo req, Wai.rawQueryString req)
         req' = case mRew of
           Nothing -> req
